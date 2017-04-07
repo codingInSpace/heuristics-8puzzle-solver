@@ -21,7 +21,7 @@ public class Board {
     }
 
     private void setRandomTiles() {
-        int[] RANDOM = new int[] { 7, 5, 2, 4, 1, 6, 3, 8, 0 };
+        int[] RANDOM = new int[] { 7, 5, 2, 4, 0, 6, 3, 8, 1 };
 
         for (int i = 0; i < N_TILES; i++) {
             numbers.addLast(RANDOM[i]);
@@ -51,24 +51,20 @@ public class Board {
         }
     }
 
+    public ArrayList<Tile> getTiles() {
+        return tiles;
+    }
+
     public void printBoard() {
-        ArrayList<Integer> tilesFirstRow = new ArrayList<>();
-        ArrayList<Integer> tilesSecondRow = new ArrayList<>();
-        ArrayList<Integer> tilesThirdRow = new ArrayList<>();
+        System.out.println("Board:");
 
-        for (int i = 0; i < N_TILES; i++) {
-            if (tiles.get(i).getRow() == 1)
-                tilesFirstRow.add(tiles.get(i).getNumber());
-            else if (tiles.get(i).getRow() == 2)
-                tilesSecondRow.add(tiles.get(i).getNumber());
-            else if (tiles.get(i).getRow() == 3)
-                tilesThirdRow.add(tiles.get(i).getNumber());
+        for (int i = 0; i < tiles.size(); i++) {
+            if (i != 0 && i % 3 == 0)
+                System.out.println();
+
+            System.out.print(tiles.get(i).getNumber() + " ");
         }
-
-        System.out.println("Board");
-        System.out.println(tilesFirstRow.get(0) + " " + tilesFirstRow.get(1) + " " + tilesFirstRow.get(2));
-        System.out.println(tilesSecondRow.get(0) + " " + tilesSecondRow.get(1) + " " + tilesSecondRow.get(2));
-        System.out.println(tilesThirdRow.get(0) + " " + tilesThirdRow.get(1) + " " + tilesThirdRow.get(2));
-        System.out.println(" ");
+        
+        System.out.println();
     }
 }

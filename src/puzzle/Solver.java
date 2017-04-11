@@ -73,10 +73,6 @@ public class Solver {
     }
 
     private void run() {
-        // Check if initial is solution
-            // push to solutionBoards
-            // return
-
         State state = new State(board, 0, 0, null);
         queue.add(state);
 
@@ -89,8 +85,15 @@ public class Solver {
             state = queue.poll();
 
             if (state.isGoal(solutionBoard)) {
+
                 // loop over previous states
-                // push to solutionBoards
+                solutionPath.push(board);
+                while (state.previous != null) {
+                    state = state.previous;
+
+                    // push to solutionBoards
+                    solutionPath.push(state.board);
+                }
                 // return
                 break;
             }
@@ -98,7 +101,7 @@ public class Solver {
             // Increment g moves
             state.gCost++;
 
-            // Calculate h cost
+            // Calculate h cost with h1
             ArrayList<Tile> solutionTiles = solutionBoard.getTiles();
             ArrayList<Tile> currentTiles = board.getTiles();
             int h = 0;
@@ -113,6 +116,9 @@ public class Solver {
 
             // Sum g and h
             state.updateCost();
+
+            // Get all neighbors
+                // Push the neighbors as new states in queue with g
 
             // Some base case
             if (iterations > 20) {

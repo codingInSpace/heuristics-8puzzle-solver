@@ -64,7 +64,7 @@ public class Board {
 
             System.out.print(tiles.get(i).getNumber() + " ");
         }
-        
+
         System.out.println();
     }
 }

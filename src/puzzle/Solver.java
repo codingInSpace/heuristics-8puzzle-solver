@@ -16,7 +16,7 @@ public class Solver {
     /**
      * Inner class State to keep track of board configuration
      */
-    private class State implements Comparable<State> {
+    class State implements Comparable<State> {
         private Board board;
         private State previous;
         private int cost;
@@ -29,6 +29,10 @@ public class Solver {
             this.hCost = hCost; //?
             this.cost = gCost + hCost;
             this.previous = prev;
+
+            //System.out.println("New state");
+            //this.board.printBoard();
+
         }
 
         private int getCost() {
@@ -39,16 +43,24 @@ public class Solver {
             cost = gCost + hCost;
         }
 
-        private boolean isGoal(Board solution) {
-            ArrayList<Tile> solutionTiles = solution.getTiles();
+        public boolean isGoal(Board solution) {
             ArrayList<Tile> currentTiles = board.getTiles();
+            for (int i = 0; i < currentTiles.size(); i++) {
+                int currentTilesNumber = currentTiles.get(i).getNumber();
 
-            for (int i = 0; i < solutionTiles.size(); i++) {
-                if (solutionTiles.get(i).getNumber() != currentTiles.get(i).getNumber())
-                    return false;
+                if (currentTilesNumber == 0) {
+                    if (i != currentTiles.size() - 1)
+                        return false;
+                }
+
+                if (currentTilesNumber != (i+1)) return false;
             }
 
             return true;
+        }
+
+        public Board getBoard() {
+            return board;
         }
 
         @Override
@@ -80,12 +92,22 @@ public class Solver {
 
         while(true) {
             iterations++;
-            System.out.println(iterations);
+            System.out.println("iteration " + iterations + ", queue: " + queue.size());
+
+            if (queue.size() == 0) {
+                System.out.println("Final board was");
+                state.board.printBoard();
+                break;
+            }
 
             state = queue.poll();
 
+            System.out.println("Picked up new");
+            state.getBoard().printBoard();
+
             if (state.isGoal(solutionBoard)) {
 
+                board.printBoard();
                 // loop over previous states
                 solutionPath.push(board);
                 while (state.previous != null) {
@@ -94,37 +116,48 @@ public class Solver {
                     // push to solutionBoards
                     solutionPath.push(state.board);
                 }
-                // return
+
+                System.out.println("Found solution");
                 break;
             }
 
             // Increment g moves
             state.gCost++;
 
-            // Calculate h cost with h1
-            ArrayList<Tile> solutionTiles = solutionBoard.getTiles();
-            ArrayList<Tile> currentTiles = board.getTiles();
-            int h = 0;
-
-            for (int i = 0; i < solutionTiles.size(); i++) {
-                if (solutionTiles.get(i).getNumber() != currentTiles.get(i).getNumber()) {
-                    h++;
-                }
-            }
-
-            state.hCost = h;
-
-            // Sum g and h
-            state.updateCost();
 
             // Get all neighbors
-                // Push the neighbors as new states in queue with g
+            Iterable<Board> neighbors = board.getNeighbors();
 
-            // Some base case
-            if (iterations > 20) {
-                break;
+            // Push the neighbors as new states in queue with g
+            for (Board neighbor : neighbors) {
+                if (state.previous != null && neighbor.equals(state.previous.board)) {
+                    //System.out.println("Ending neighbor iteration");
+                    //neighbor.printBoard();
+                    continue;
+                }
+
+                // Calculate board h cost with h1
+                ArrayList<Tile> currentTiles = neighbor.getTiles();
+                int h = 0;
+
+                for (int i = 0; i < currentTiles.size(); i++) {
+                    int currentTilesNumber = currentTiles.get(i).getNumber();
+
+                    if (currentTilesNumber == 0) continue;
+                    if (currentTilesNumber != (i+1)) h++;
+                }
+
+                int boardCost = state.gCost + h;
+
+                State newState = new State(neighbor, state.gCost, boardCost, state);
+                queue.add(newState);
             }
 
+            // Some base case
+            if (iterations > 1000000) {
+                System.out.println("exceeded max iterations");
+                break;
+            }
         }
     }
 

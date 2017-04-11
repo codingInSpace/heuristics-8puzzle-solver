@@ -75,7 +75,7 @@ public class Solver {
         State state = new State(board, 0, 0, null);
 
         // Start time count
-        long timeCounter = System.currentTimeMillis();
+        long timeCountStart = System.nanoTime();
 
         if (!state.board.isSolvable()) {
             System.out.println("Board is not solvable");
@@ -104,6 +104,9 @@ public class Solver {
 
             if (state.isGoal()) {
 
+                long timeCountStop = System.nanoTime();
+                double timeDiff = (timeCountStop - timeCountStart)/1e6;
+
                 // loop over previous states and push back
                 solutionPath.push(state.board);
                 while (state.previous != null) {
@@ -115,7 +118,7 @@ public class Solver {
                 while (!solutionPath.isEmpty()) {
                     solutionPath.pop().printBoard();
                 }
-                System.out.println("Done in " + (System.currentTimeMillis() - timeCounter) + " ms.");
+                System.out.println("Done in " + timeDiff + " ms.");
 
                 break;
             }

@@ -20,12 +20,12 @@ public class Board {
         initTiles();
     }
 
-    private Board(ArrayList<Tile> tiles) {
+    public Board(ArrayList<Tile> tiles) {
         this.tiles = (ArrayList<Tile>)tiles.clone();
     }
 
     private void setRandomTiles() {
-        int[] RANDOM = new int[] { 1, 0, 3, 4, 2, 5, 7, 8, 6 };
+        int[] RANDOM = new int[] { 1, 0, 2, 4, 5, 3, 7, 8, 6 };
 
         for (int i = 0; i < N_TILES; i++) {
             numbers.addLast(RANDOM[i]);
@@ -47,6 +47,22 @@ public class Board {
                 tiles.add(tile);
             }
         }
+    }
+
+    public boolean isSolvable() {
+        int inversions = 0;
+
+        for(int i = 0; i < tiles.size() - 1; i++) {
+            for(int j = i + 1; j < tiles.size(); j++) {
+                if(tiles.get(i).getNumber() > tiles.get(j).getNumber())
+                    inversions++;
+            }
+
+            if(tiles.get(i).getNumber() == 0 && i % 2 == 1)
+                inversions++;
+        }
+
+        return (inversions % 2 == 0);
     }
 
     public void printBoardTiles() {
@@ -89,7 +105,7 @@ public class Board {
         Stack<Board> neighborBoards = new Stack<Board>();
 
         //System.out.println("Getting neighbors for");
-        this.printBoard();
+        //this.printBoard();
 
         // The neighbors that are available
         boolean left = false;
@@ -98,10 +114,11 @@ public class Board {
         boolean down = false;
 
         int index = 0;
+        ArrayList<Tile> originalTiles = (ArrayList<Tile>)tiles.clone();
 
         // Get index where tile number is 0
-        for (int i = 0; i < tiles.size(); i++) {
-            if (tiles.get(i).getNumber() == 0) {
+        for (int i = 0; i < originalTiles.size(); i++) {
+            if (originalTiles.get(i).getNumber() == 0) {
 
                 // Set which neighbors are available
                 index = i+1;
@@ -114,27 +131,21 @@ public class Board {
             }
         }
 
-        //System.out.println("neighbor moves: " + left + right + up + down);
-
         // Correct index at number 0 starting count from 0
         index = index - 1;
 
-        ArrayList<Tile> originalTiles = (ArrayList<Tile>)tiles.clone();
         Board board = new Board(originalTiles);
 
         if (left) {
-            //System.out.println("Before left move");
-            //board.printBoard();
             board.swap(index,  -1);
-
-            //System.out.println("After left move");
-            //board.printBoard();
-
             neighborBoards.push(board);
             board = new Board(originalTiles);
+        }
 
-            //System.out.println("Board reset");
-            //board.printBoard();
+        if (down) {
+            board.swap(index, 3);
+            neighborBoards.push(board);
+            board = new Board(originalTiles);
         }
 
         if (right) {
@@ -146,20 +157,7 @@ public class Board {
         if (up) {
             board.swap(index,  -3);
             neighborBoards.push(board);
-            board = new Board(originalTiles);
         }
-
-        if (down) {
-            board.swap(index, 3);
-            neighborBoards.push(board);
-        }
-
-        //Stack<Board> copy = neighborBoards;
-        //
-        //System.out.println("Received neighbors: ");
-        //while (copy.peek() != null) {
-        //    copy.pop().printBoard();
-        //}
 
         return neighborBoards;
     }
@@ -178,6 +176,7 @@ public class Board {
             System.out.print(tiles.get(i).getNumber() + " ");
         }
 
+        System.out.println();
         System.out.println();
     }
 }

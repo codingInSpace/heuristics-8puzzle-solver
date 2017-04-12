@@ -6,18 +6,14 @@ public class Board {
     private ArrayList<Tile> tiles;
     private Deque<Integer> numbers;
     private final int N_TILES = 9;
-    private final int N_COLS_ROWS = 3;
 
     public Board(boolean isSolution) {
         tiles = new ArrayList<Tile>();
-        numbers = new LinkedList<Integer>();
 
         if (isSolution)
             setSolutionTiles();
         else
             setRandomTiles();
-
-        initTiles();
     }
 
     public Board(ArrayList<Tile> tiles) {
@@ -29,26 +25,17 @@ public class Board {
         int[] RANDOM = new int[] { 0, 1, 3, 4, 2, 5, 7, 8, 6 }; // 4 moves
         //int[] RANDOM = new int[] { 1, 3, 4, 8, 0, 5, 7, 2, 6 }; // not solvable
 
-        for (int i = 0; i < N_TILES; i++) {
-            numbers.addLast(RANDOM[i]);
-        }
+        initTiles(RANDOM);
     }
 
     private void setSolutionTiles() {
-        final int[] GOAL = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
-
-        for (int i = 0; i < N_TILES; i++) {
-           numbers.addLast(GOAL[i]);
-        }
+        int[] GOAL = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
+        initTiles(GOAL);
     }
 
-    private void initTiles() {
-        for (int i = 0; i < N_COLS_ROWS; i++) {
-            for (int j = 0; j < N_COLS_ROWS; j++) {
-                Tile tile = new Tile(numbers.removeFirst(), i+1, j+1);
-                tiles.add(tile);
-            }
-        }
+    private void initTiles(int[] numbers) {
+        for (int i = 0; i < N_TILES; i++)
+            tiles.add(new Tile(numbers[i]));
     }
 
     public boolean isSolvable() {
@@ -65,12 +52,6 @@ public class Board {
         }
 
         return (inversions % 2 == 0);
-    }
-
-    public void printBoardTiles() {
-        for (int i = 0; i < N_TILES; i++) {
-            tiles.get(i).printValues();
-        }
     }
 
     public boolean equals(Object x) {
@@ -105,9 +86,6 @@ public class Board {
 
     public Iterable<Board> getNeighbors() {
         Stack<Board> neighborBoards = new Stack<Board>();
-
-        //System.out.println("Getting neighbors for");
-        //this.printBoard();
 
         // The neighbors that are available
         boolean left = false;

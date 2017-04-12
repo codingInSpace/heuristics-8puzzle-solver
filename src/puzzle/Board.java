@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Board {
     private ArrayList<Tile> tiles;
-    private Deque<Integer> numbers;
     private final int N_TILES = 9;
 
     public Board(boolean isSolution) {

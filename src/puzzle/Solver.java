@@ -11,7 +11,6 @@ public class Solver {
     private Stack<Board> solutionPath;
     private PriorityQueue<State> queue;
     private boolean h1;
-    private boolean isSolvable;
     public final HashSet<ArrayList<Tile>> handledTileSets;
     private final int N_COLS_ROWS = 3;
 

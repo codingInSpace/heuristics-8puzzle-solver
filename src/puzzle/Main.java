@@ -5,7 +5,7 @@ public class Main {
         Board board = new Board(false);
         board.printBoard();
 
-        Solver solver = new Solver(board, true);
+        Solver solver = new Solver(board, false);
         solver.run();
     }
 }

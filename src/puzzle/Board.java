@@ -8,11 +8,11 @@ public class Board {
     private final int N_TILES = 9;
     private final int N_COLS_ROWS = 3;
 
-    public Board(boolean solution) {
+    public Board(boolean isSolution) {
         tiles = new ArrayList<Tile>();
         numbers = new LinkedList<Integer>();
 
-        if (solution)
+        if (isSolution)
             setSolutionTiles();
         else
             setRandomTiles();
@@ -25,7 +25,9 @@ public class Board {
     }
 
     private void setRandomTiles() {
-        int[] RANDOM = new int[] { 1, 0, 2, 4, 5, 3, 7, 8, 6 };
+        //int[] RANDOM = new int[] { 1, 0, 2, 4, 5, 3, 7, 8, 6 }; // 3 moves
+        int[] RANDOM = new int[] { 0, 1, 3, 4, 2, 5, 7, 8, 6 }; // 4 moves
+        //int[] RANDOM = new int[] { 1, 3, 4, 8, 0, 5, 7, 2, 6 }; // not solvable
 
         for (int i = 0; i < N_TILES; i++) {
             numbers.addLast(RANDOM[i]);
